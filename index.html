@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>城市信息表单</title>
+</head>
+<body>
+    <h1>城市信息表单</h1>
+    <form action="http://localhost:8080/city.php" method="post">
+        <label for="cityName">城市名称:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="cityCode">城市编码:</label>
+        <input type="text" id="code" name="code" required><br><br>
+
+        <label for="cityCode">增删改查:</label>
+        <input type="text" id="mark" name="mark" required><br><br>
+
+        <input type="submit" value="提交">
+    </form>
+
+    <p id="jsonResponse"></p>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            // 方式一：PHP 中使用这种方式获取 $name = $_POST['name'] ?? '';
+            var form = event.target;
+            var formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('jsonResponse').textContent = JSON.stringify(data);
+            })
+            .catch(error => console.error('请求接口失败', error));
+
+            /*
+            // 方式二：PHP中用这种方式获取 $data = json_decode(file_get_contents('php://input'), true);  $name = $data['name'] ?? '';
+            var form = event.target;
+            var name = form.elements.name.value;
+            var code = form.elements.code.value;
+            var mark = form.elements.mark.value;
+            var requestData = {
+                name: name,
+                code: code,
+                mark: parseInt(mark) // mark 1:增 2:删 3:改 4:查
+            };
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    document.getElementById('jsonResponse').textContent = JSON.stringify(data);
+                } else {
+                    console.error('请求接口失败');
+                }
+            };
+            xhr.send(JSON.stringify(requestData));
+            */
+        });
+    </script>
+</body>
+</html>
