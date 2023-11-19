@@ -1,5 +1,5 @@
 <?php
-require "sqlOperation.php";
+require "pdoConnect.php";
 require "output.php";
 
 $tb_name = "cities";
@@ -62,8 +62,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             outputJSON(ErrorCode::DATA_NOT_FOUND);
         }
     }
+}
 
-    exit;
+// 改变数据 插入|更新|删除
+function changeData(string $sql, array $arr) {
+    global $pdo;
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute($arr);
+    return $result;
+}
+
+// 查询数据
+function findData(string $sql, array $arr) {
+    global $pdo;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($arr);
+    $result = $stmt->fetch();
+    return $result;
 }
 
 ?>
